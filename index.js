@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const fs = require("fs");
 
 const team = [];
+let managerString;
 
 const managerQuestions = [
   {
@@ -64,8 +65,8 @@ function TeamMember(name, id, github, email, title, add) {
   this.add = add;
 }
 
-function teamListBuild(mgrName, officeNumber, managerInfo) {
-  // console.log("NAme: " + mgrName,"Office Number: " + officeNumber, "Manager: " + managerInfo)
+function teamListBuild(mgr) {
+
   inquirer.prompt(employeeQuestions).then((data) => {
     var newEmployee = new TeamMember(
       data.name,
@@ -79,49 +80,64 @@ function teamListBuild(mgrName, officeNumber, managerInfo) {
 
     if (data.add) {
       team.push(newEmployee);
-    //   console.log(team + " processing...");
+      //   console.log(team + " processing...");
       teamListBuild();
     } else {
       team.push(newEmployee);
-      const arrays = sortArr(team);
-      const engineer = arrays[0];
-      const intern = arrays[1];
-      console.log(engineer[0])
-      teamPage(mgrName, officeNumber, managerInfo, engineer[0], intern[0])
-    //   console.log(team + " finsished");
+      let result = sortArr(team);
+    //   console.log("engineers: " + result.engineers);
+    //   console.log("interns: " + result.intern);
+    // console.log("mgr: " + result.mgr);
+    // console.log("res: " + result.eng);
+    //     console.log("result: " + result.int);
+    //   const arrays = sortArr(team);
+    //   const engineer = result[0];
+    //   const intern = result[1];
+    //   console.log(engineer[0]);
+    // console.log(managerString)
+    // console.log(arrays)
+      teamPage(result.mgr, result.eng, result.int)
+    //   console.log(engineer, intern);
+      //   console.log(team + " finsished");
     }
-  });
-
+  })
 }
 
 function sortArr(team) {
-    let engList = [];
-    let intList = [];
-    for (member of team) {
-        // console.log(member);
-        if (member.title === "Engineer") {
-          let card = makeEngCard(
-            member.name,
-            member.id,
-            member.github,
-            member.email,
-            member.title
-          );
-          engList.push(card);
-        } else if (member.title === "Intern") {
-          let card = makeIntCard(
-            member.name,
-            member.id,
-            member.github,
-            member.email,
-            member.title
-          );
-        
-          intList.push(card);
-        }
+  let engList = [];
+  let intList = [];
+
+  let teamArr = team.shift();
+//   console.log("Shift result: " + teamArr);
+//   console.log(team)
+  for (var member of team) {
+    // console.log(member);
+    if (member.title === "Engineer") {
+      let engCard = makeEngCard(
+        member.name,
+        member.id,
+        member.github,
+        member.email,
+        member.title
+      );
+      
+      engList.push(engCard)
+    } else if (member.title === "Intern") {
+      let intCard = makeIntCard(
+        member.name,
+        member.id,
+        member.github,
+        member.email,
+        member.title
+      );
+    
+      intList.push(intCard)
     }
 
-      return [engList, intList]
+
+  }
+
+  return {mgr: teamArr, eng: engList, int: intList}
 }
 
 function managerInit() {
@@ -129,27 +145,28 @@ function managerInit() {
     // console.log(response);
     // console.log(response.manager);
     if (response.teamConfirm) {
+        managerString = makeMgrCard(
+            response.manager,
+            response.email,
+            response.office
+          );
+          team.push(managerString);
+     teamListBuild(managerString);
+
+    } else if (response.teamConfirm === false) {
       var mgrCard = makeMgrCard(
         response.manager,
         response.email,
         response.office
       );
-      //   console.log(response.manager, response.office, mgrCard)
-      teamListBuild(response.manager, response.office, mgrCard);
-    } else if (response.teamConfirm === false) {
-      var mgrCard = makeMgrCard(
-      response.manager,
-      response.email,
-      response.office
-    );
-    teamPage(response.manager, response.office, mgrCard);  
+      teamPage(response.manager, response.office, mgrCard);
     }
   });
 }
 
-function teamPage(name, officeNum, mgrCard, engineers, interns) {
-    // console.log(name, officeNum, mgrCard, engineers, interns)
-    const teamPageTemplate = `
+function teamPage(mgr, eng, int) {
+  // console.log(name, officeNum, mgrCard, engineers, interns)
+  const teamPageTemplate = `
       <!doctype html>
   <html lang="en">
     <head>
@@ -163,27 +180,26 @@ function teamPage(name, officeNum, mgrCard, engineers, interns) {
     </head>
     <body>
       <div class="jumbotron text-center">
-          <h1>${name}'s Team</h1>
-          <h2>Office Number: ${officeNum}<h2>
+          <h1>Team Page</h1>
       </div>
       <div class="container">
           <div class="row">
               <h2>Managers:</h2>
           </div>
           <div class="row">
-              ${mgrCard}
+              ${mgr}
           </div>
           <div class="row">
               <h2>Engineers:</h2>
           </div>
           <div class="row">
-              ${engineers}
+              ${eng}
           </div>
           <div class="row">
               <h2>Interns:</h2>
           </div>
           <div class="row">
-              ${interns}
+              ${int}
           </div>
       </div>
       <!-- Optional JavaScript -->
@@ -194,28 +210,28 @@ function teamPage(name, officeNum, mgrCard, engineers, interns) {
     </body>
   </html>
       `;
-    fs.writeFile(name + ".html", teamPageTemplate, function (err) {
-      if (err) {
-        console.log(err);
-      }
-    });
+  fs.writeFile("new-team-page.html", teamPageTemplate, function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
 }
 
 const makeMgrCard = (manager, email, office) => {
-  let templateCard = `<div class="col-lg-3"><div class="card text-white bg-danger mb-3" style="max-width: 18rem;"><div class="card-header"><h4>${manager}</h4></div><div class="card-body"><h5 class="card-title">Office: ${office}</h5><h4>Email: ${email}</h4></div></div></div>`;
+  let templateCard = `<div class="col-lg-3"><div class="card text-white bg-danger mb-3" style="max-width: 18rem;"><div class="card-header"><h4>${manager}</h4></div><div class="card-body"><h5 class="card-title">Office: ${office}</h5><p><strong>Email:</strong> ${email}</p></div></div></div>`;
 
   //   console.log(templateCard);
   return templateCard;
 };
 
 const makeEngCard = (name, id, github, email, title) => {
-  let templateCard = `<div class="col-lg-3"><div class="card text-white bg-danger mb-3" style="max-width: 18rem;"><div class="card-header"><h4>${name}</h4></div><div class="card-body"><h5 class="card-title">Title: ${title}</h5><h4>ID: ${id}</h4><h4>Email: ${email}</h4><h4>GitHub: ${github}</h4></div></div></div>`;
+  let templateCard = `<div class="col-lg-3"><div class="card text-white bg-info mb-3" style="max-width: 18rem;"><div class="card-header"><h4>${name}</h4></div><div class="card-body"><h5 class="card-title">Title: ${title}</h5><p><strong>ID:</strong> ${id}</p><p><strong>Email:</strong> ${email}</p><p><strong>GitHub:</strong> ${github}</p></div></div></div>`;
 
   return templateCard;
 };
 
 const makeIntCard = (name, id, github, email, title) => {
-  let templateCard = `<div class="col-lg-3"><div class="card text-light bg-info mb-3" style="max-width: 18rem;"><div class="card-header"><h4>${name}</h4></div><div class="card-body"><h5 class="card-title">Title: ${title}</h5><h4>ID: ${id}</h4><h4>Email: ${email}</h4><h4>GitHub: ${github}</h4></div></div></div>`;
+  let templateCard = `<div class="col-lg-3"><div class="card text-dark bg-light mb-3" style="max-width: 18rem;"><div class="card-header"><h4>${name}</h4></div><div class="card-body"><h5 class="card-title">Title: ${title}</h5><p><strong>ID:</strong> ${id}</p><p><strong>Email:</strong> ${email}</p><p><strong>GitHub:</strong> ${github}</p></div></div></div>`;
 
   return templateCard;
 };
