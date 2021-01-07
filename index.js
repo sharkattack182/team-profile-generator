@@ -10,4 +10,37 @@ inquirer.prompt([
 ]).then(data => {
     let confirm = data.prompt
     console.log(confirm);
+
+    if(confirm) {
+        inquirer.prompt([
+            {
+                type: "input",
+                message: "What is the employees name?",
+                name: "name"
+            },
+            {
+                type: "number",
+                message: "What is the employees ID?",
+                name: "id"
+            },
+            {
+                type: "input",
+                message: "What is the employees GitHub?",
+                name: "github"
+            },
+            {
+                type: "input",
+                message: "What is the employees email?",
+                name: "email"
+            },
+            {
+                type: "list",
+                message: "What is the employees title?",
+                choices: ["Engineer", "Intern"],
+                name: "title"
+            },
+        ]).then(data => {
+            console.log(data);
+        })
+    }
 })
