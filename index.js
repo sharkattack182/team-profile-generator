@@ -76,29 +76,14 @@ function teamListBuild(mgr) {
       data.title,
       data.add
     );
-    // console.log(newEmployee);
 
     if (data.add) {
       team.push(newEmployee);
-      //   console.log(team + " processing...");
       teamListBuild();
     } else {
       team.push(newEmployee);
       let result = sortArr(team);
-    //   console.log("engineers: " + result.engineers);
-    //   console.log("interns: " + result.intern);
-    // console.log("mgr: " + result.mgr);
-    // console.log("res: " + result.eng);
-    //     console.log("result: " + result.int);
-    //   const arrays = sortArr(team);
-    //   const engineer = result[0];
-    //   const intern = result[1];
-    //   console.log(engineer[0]);
-    // console.log(managerString)
-    // console.log(arrays)
       teamPage(result.mgr, result.eng, result.int)
-    //   console.log(engineer, intern);
-      //   console.log(team + " finsished");
     }
   })
 }
@@ -108,10 +93,7 @@ function sortArr(team) {
   let intList = [];
 
   let teamArr = team.shift();
-//   console.log("Shift result: " + teamArr);
-//   console.log(team)
   for (var member of team) {
-    // console.log(member);
     if (member.title === "Engineer") {
       let engCard = makeEngCard(
         member.name,
@@ -142,8 +124,6 @@ function sortArr(team) {
 
 function managerInit() {
   inquirer.prompt(managerQuestions).then((response) => {
-    // console.log(response);
-    // console.log(response.manager);
     if (response.teamConfirm) {
         managerString = makeMgrCard(
             response.manager,
@@ -165,7 +145,6 @@ function managerInit() {
 }
 
 function teamPage(mgr, eng, int) {
-  // console.log(name, officeNum, mgrCard, engineers, interns)
   const teamPageTemplate = `
       <!doctype html>
   <html lang="en">
@@ -219,22 +198,18 @@ function teamPage(mgr, eng, int) {
 
 const makeMgrCard = (manager, email, office) => {
   let templateCard = `<div class="col-lg-3"><div class="card text-white bg-danger mb-3" style="max-width: 18rem;"><div class="card-header"><h4>${manager}</h4></div><div class="card-body"><h5 class="card-title">Office: ${office}</h5><p><strong>Email:</strong> ${email}</p></div></div></div>`;
-
-  //   console.log(templateCard);
   return templateCard;
 };
 
 const makeEngCard = (name, id, github, email, title) => {
   let templateCard = `<div class="col-lg-3"><div class="card text-white bg-info mb-3" style="max-width: 18rem;"><div class="card-header"><h4>${name}</h4></div><div class="card-body"><h5 class="card-title">Title: ${title}</h5><p><strong>ID:</strong> ${id}</p><p><strong>Email:</strong> ${email}</p><p><strong>GitHub:</strong> ${github}</p></div></div></div>`;
-
   return templateCard;
 };
 
 const makeIntCard = (name, id, github, email, title) => {
   let templateCard = `<div class="col-lg-3"><div class="card text-dark bg-light mb-3" style="max-width: 18rem;"><div class="card-header"><h4>${name}</h4></div><div class="card-body"><h5 class="card-title">Title: ${title}</h5><p><strong>ID:</strong> ${id}</p><p><strong>Email:</strong> ${email}</p><p><strong>GitHub:</strong> ${github}</p></div></div></div>`;
-
   return templateCard;
 };
 
 managerInit();
-// teamListBuild();
+
