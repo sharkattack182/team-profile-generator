@@ -55,18 +55,21 @@ const employeeQuestions = [
   },
 ];
 
-function TeamMember(...data) {
-    this.name = data.name;
-    this.github = data.github;
-    this.email = data.email;
-    this.title = data.title;
-    this.add = data.add;
+function TeamMember(name, id, github, email, title, add) {
+    this.name = name;
+    this.id = id;
+    this.github = github;
+    this.email = email;
+    this.title = title;
+    this.add = add;
 }
 
 function teamListBuild() {
   inquirer.prompt(employeeQuestions).then((data) => {
-    console.log(data);
-
+    // console.log(data.name);
+    console.log(team.length)
+    var newEmployee = new TeamMember(data.name, team.length + 1, data.github, data.email, data.title, data.add);
+    console.log(newEmployee)
 
     if (data.add) {
       team.push(data);
@@ -86,5 +89,5 @@ function managerInit() {
     })
 }
 
-managerInit();
-// teamListBuild();
+// managerInit();
+teamListBuild();
