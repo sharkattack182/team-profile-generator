@@ -1,0 +1,23 @@
+{
+  "name": "team-profile-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sharkattack182/team-profile-generator.git"
+  },
+  "author": "Matthew Courtney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sharkattack182/team-profile-generator/issues"
+  },
+  "homepage": "https://github.com/sharkattack182/team-profile-generator#readme",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "inquirer": "^7.3.3"
+  }
+}
