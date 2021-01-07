@@ -3,8 +3,7 @@ const fs = require("fs");
 
 const team = [];
 
-const managerInput = inquirer
-  .prompt([
+const managerQuestions = [
     {
       type: "input",
       message: "Who is the manager of this team?",
@@ -16,56 +15,62 @@ const managerInput = inquirer
       name: "email",
     },
     {
+      type: "input",
+      message: "What is the managers office number?",
+      name: "office",
+    },
+    {
         type: "input",
-        message: "What is the managers office number?",
-        name: "email",  
-    }
-  ])
-  .then((data) => {
-    console.log(data);
-  });
-// inquirer.prompt([
-//     {
-//         type: "confirm",
-//         message: "would you like to add an employee?",
-//         name: "prompt"
-//     }
-// ]).then(data => {
-//     let confirm = data.prompt
-//     console.log(confirm);
+        message: "Do you have any team members?",
+        name: "teamConfirm",
+      },
+  ];
 
-//     if(confirm) {
-//         inquirer.prompt([
-//             {
-//                 type: "input",
-//                 message: "What is the employees name?",
-//                 name: "name"
-//             },
-//             {
-//                 type: "number",
-//                 message: "What is the employees ID?",
-//                 name: "id"
-//             },
-//             {
-//                 type: "input",
-//                 message: "What is the employees GitHub?",
-//                 name: "github"
-//             },
-//             {
-//                 type: "input",
-//                 message: "What is the employees email?",
-//                 name: "email"
-//             },
-//             {
-//                 type: "list",
-//                 message: "What is the employees title?",
-//                 choices: ["Engineer", "Intern"],
-//                 name: "title"
-//             },
-//         ]).then(data => {
-//             console.log(data);
-//         })
-//     }
-// })
+const employeeQuestions = [
+    {
+      type: "input",
+      message: "What is the employees name?",
+      name: "name",
+    },
+    {
+      type: "number",
+      message: "What is the employees ID?",
+      name: "id",
+    },
+    {
+      type: "input",
+      message: "What is the employees GitHub?",
+      name: "github",
+    },
+    {
+      type: "input",
+      message: "What is the employees email?",
+      name: "email",
+    },
+    {
+      type: "list",
+      message: "What is the employees title?",
+      choices: ["Engineer", "Intern"],
+      name: "title",
+    },
+    {
+      type: "confirm",
+      message: "Would you like to add another employee?",
+      name: "add",
+    },
+  ];
 
+  function teamListBuild() {
+      inquirer.prompt(employeeQuestions).then(data => {
+        console.log(data)
+        if(data.add === true) {
+            team.push(data);
+            teamListBuild();
+        }
+        else{
+            console.log(team)
+        }
+      })
+  }
 
+  teamListBuild();
