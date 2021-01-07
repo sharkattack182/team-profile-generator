@@ -87,12 +87,13 @@ function managerInit() {
         if(response.teamConfirm) {
             teamListBuild();
         }
-        
-        teamPage(response.manager, response.office)
+        var mgrCard = makeMgrCard(response.manager, response.email, response.office, response.teamConfirm)
+        teamPage(response.manager, response.office, mgrCard);
+
     })
 }
 
-function teamPage(name, officeNum) {
+function teamPage(name, officeNum, mgrCard) {
     const teamPageTemplate = `
     <!doctype html>
 <html lang="en">
@@ -111,6 +112,10 @@ function teamPage(name, officeNum) {
         <h1>${name}'s Team</h1>
         <h2>Office Number: ${officeNum}<h2>
     </div>
+    <div class="container">
+        <h2>Managers:</h2>
+        ${mgrCard}
+    </div>
     
 
     <!-- Optional JavaScript -->
@@ -126,6 +131,23 @@ function teamPage(name, officeNum) {
             console.log(err)
         }
     })
+}
+
+const makeMgrCard = (manager, email, office, teamConfirm) => {
+    var templateCard = 
+    `
+    <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+    <div class="card-header"><h4>${manager}</h4></div>
+    <div class="card-body">
+      <h5 class="card-title">Office: ${office}</h5>
+      <h4>Email: ${email}</h4>
+    </div>
+  </div>
+    `;
+
+    console.log(templateCard)
+    return(templateCard);
+
 }
 
 
