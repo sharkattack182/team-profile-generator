@@ -33,11 +33,6 @@ const employeeQuestions = [
     name: "name",
   },
   {
-    type: "number",
-    message: "What is the employees ID?",
-    name: "id",
-  },
-  {
     type: "input",
     message: "What is the employees GitHub?",
     name: "github",
@@ -60,10 +55,20 @@ const employeeQuestions = [
   },
 ];
 
+function TeamMember(...data) {
+    this.name = data.name;
+    this.github = data.github;
+    this.email = data.email;
+    this.title = data.title;
+    this.add = data.add;
+}
+
 function teamListBuild() {
   inquirer.prompt(employeeQuestions).then((data) => {
     console.log(data);
-    if (data.add === true) {
+
+
+    if (data.add) {
       team.push(data);
       teamListBuild();
     } else {
@@ -75,6 +80,9 @@ function teamListBuild() {
 function managerInit() {
     inquirer.prompt(managerQuestions).then(response => {
         console.log(response)
+        if(response.teamConfirm) {
+            teamListBuild();
+        }
     })
 }
 
